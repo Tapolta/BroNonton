@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { UserProps } from "../../stores/roomWatch.svelte.js";
-	import UserCard from "../components/UserCard.svelte";
+	import type { UserProps } from "../../types/globalTypes.js";
 	import UserList from "../components/UserList.svelte";
 	import UsernameInput from "../components/UsernameInput.svelte";
 	import VideoList from "../components/VideoList.svelte";
@@ -18,6 +17,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>BroNonton</title>
+</svelte:head>
+
 {#if !userHasSaveName}
 	<UsernameInput bind:user onSaveName={() => {userHasSaveName = true}} />
 {:else}
@@ -26,11 +29,8 @@
 		<VideoList />
 	</div>
 	{#if userList !== undefined}
-	<div class="m-2">
-		<UserList userList={userList} />
-	</div>
+		<div class="m-2">
+			<UserList userList={userList} />
+		</div>
 	{/if}
 {/if}
-
-
-

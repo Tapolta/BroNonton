@@ -2,7 +2,7 @@
   import VideoPlayer from '$lib/VideoPlayer.svelte';
   import { onDestroy, onMount } from 'svelte';
   import Loading from './Loading.svelte';
-  import type {UserProps} from '../../stores/roomWatch.svelte.js';
+	import type { UserProps } from '../../types/globalTypes.js';
 
   interface dataSendProps {
     sender: UserProps,
@@ -16,14 +16,10 @@
   let ws: WebSocket;
   let wsConnected: boolean = $state(false);
   let player: any;
-  let playerReady: boolean = $state(false);
   let allowSend: boolean = true;
   let checkInterval: number;
-  const webSocketServerPath: string = "ws://192.168.28.20:3000/";
-
-  onMount(() => {
-    onUserHasSet();
-  });
+  const webSocketServerPath: string = 
+    "ws://192.168.28.20:3000";
 
   const onUserHasSet = () => {
     webSocketConnect();
@@ -45,7 +41,6 @@
 
     ws.addEventListener('message', (e) => {
       const serverVideoData = JSON.parse(e.data);
-      console.log(serverVideoData);
       
       if (serverVideoData.type === "init") {
         if (user.id !== '' && user.name !== '') {
@@ -56,8 +51,8 @@
       if (serverVideoData.type === "hasInit") {
         onSetUsers(serverVideoData.users);
         if (serverVideoData.videoPlayer.play) {
-          player?.currentTime(serverVideoData.videoPlayer.time);
           player?.play();
+          player?.currentTime(serverVideoData.videoPlayer.time);
         } else {
           player?.currentTime(serverVideoData.videoPlayer.time);
           player?.pause();
@@ -82,7 +77,7 @@
   }
 
   const handlePlayerReady = (currentPlayer: any) => {
-    playerReady = true;
+    onUserHasSet();
     player = currentPlayer;
   }
 
@@ -120,13 +115,13 @@
 <div class="flex justify-center items-center w-full bg-black rounded-lg">
   <div class="w-full max-w-4xl">
     <VideoPlayer
-      src="/SaRinduKo.mp4"
+      src="/video.mp4"
       onPlayerReady={handlePlayerReady}
       sync={sync}
     />
   </div>
 </div>
 
-{#if !wsConnected || !playerReady}
+{#if !wsConnected}
   <Loading />
 {/if}
